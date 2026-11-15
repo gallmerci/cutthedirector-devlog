@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cut the Director: the making-of</title>
+<meta name="description" content="How one human directed a crew of AI agents to build a game about directing an AI, in two days, for the 2026 Epic AI MegaJam.">
+<meta property="og:title" content="Cut the Director: the making-of">
+<meta property="og:description" content="How one human directed a crew of AI agents to build a game about directing an AI, in two days.">
+<meta property="og:image" content="img/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+@font-face { font-family: "CtdTitle"; src: url("fonts/title_font.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "CtdHand"; src: url("fonts/hand_font.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "CtdMono"; src: url("fonts/mono_font.ttf") format("truetype"); font-display: swap; }
+
+:root {
+  --dark: #1A120C; --bench: #3B2A1E; --paper: #FBF3DC; --ink: #2B2118; --tape: #EFE3B4;
+  --amber: #E8B04A; --red: #E5383B; --green: #39FF14; --lime: #D7FF5E; --term: #021204;
+  --kraft: #C49A6C; --muted: #D9C9A8;
+}
+* { box-sizing: border-box; }
+html { background: var(--dark); }
+body {
+  margin: 0; color: var(--paper); background: var(--dark);
+  font: 19px/1.7 "Lato", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--amber); text-underline-offset: 3px; }
+a:hover { color: var(--paper); }
+
+/* Hero: the game's own hero frame behind the title */
+.hero {
+  position: relative; min-height: min(78vh, 760px); display: flex; align-items: flex-end;
+  background: linear-gradient(90deg, rgba(26,18,12,.94) 0%, rgba(26,18,12,.75) 45%, rgba(26,18,12,.25) 100%),
+              linear-gradient(0deg, var(--dark) 0%, rgba(26,18,12,0) 35%),
+              url("img/hero.jpg") center / cover no-repeat;
+}
+.hero-inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 96px 24px 64px; }
+.tape {
+  display: inline-block; background: var(--tape); color: var(--ink);
+  font-family: "CtdTitle", "Oswald", sans-serif; text-transform: uppercase; letter-spacing: .02em;
+  padding: 4px 16px; transform: rotate(-1.5deg); box-shadow: 0 3px 0 rgba(0,0,0,.35);
+}
+.hero .tape { font-size: 20px; }
+h1 {
+  font-family: "CtdTitle", "Oswald", sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(44px, 10vw, 120px); line-height: .95; margin: 22px 0 18px; letter-spacing: .01em;
+}
+h1 .cut { color: var(--red); }
+.lede { font-family: "CtdHand", "Lato", sans-serif; font-size: clamp(22px, 2.6vw, 30px); line-height: 1.35; max-width: 640px; margin: 0; }
+.byline { margin-top: 26px; font-family: "CtdMono", monospace; color: var(--green); font-size: 16px; line-height: 1.6; }
+.byline span { color: var(--lime); }
+
+/* Article column */
+main { max-width: 780px; margin: 0 auto; padding: 24px 24px 40px; }
+main > p { margin: 0 0 1.2em; }
+.intro {
+  background: var(--paper); color: var(--ink); padding: 28px 32px; margin: 0 0 56px;
+  border-left: 10px solid var(--amber); box-shadow: 0 6px 0 rgba(0,0,0,.35); font-size: 20px;
+}
+.intro p { margin: 0 0 .9em; } .intro p:last-child { margin: 0; }
+h2 {
+  font-family: "CtdTitle", "Oswald", sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(28px, 4vw, 38px); line-height: 1.1; margin: 64px 0 22px;
+}
+h2 .tape { font-size: inherit; padding: 6px 18px; }
+section:nth-of-type(even) h2 .tape { transform: rotate(1deg); }
+
+/* Panels break out of the column a little */
+figure { margin: 40px -120px; }
+figure a { display: block; }
+figure img {
+  display: block; width: 100%; height: auto; border: 4px solid var(--paper);
+  box-shadow: 0 8px 0 rgba(0,0,0,.4); background: var(--bench);
+}
+figcaption { font-family: "CtdHand", "Lato", sans-serif; color: var(--muted); font-size: 19px; margin-top: 12px; text-align: center; }
+@media (max-width: 1060px) { figure { margin: 36px 0; } }
+
+/* The one bug that got past the tests */
+.callout {
+  background: var(--term); border: 2px solid var(--green); color: var(--lime);
+  font-family: "CtdMono", monospace; font-size: 16.5px; line-height: 1.65;
+  padding: 20px 24px; margin: 28px 0; box-shadow: 0 0 18px rgba(57,255,20,.18);
+}
+.callout b { color: var(--green); font-weight: 400; }
+
+/* Numbers */
+.numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 28px 0 0; padding: 0; list-style: none; }
+.numbers li { background: var(--bench); border-top: 4px solid var(--kraft); padding: 16px 18px 18px; line-height: 1.4; font-size: 17px; }
+.numbers li:nth-child(3n+1) { border-top-color: var(--amber); }
+.numbers li:nth-child(3n+2) { border-top-color: var(--green); }
+.numbers .n { display: block; font-family: "CtdTitle", "Oswald", sans-serif; font-size: 44px; line-height: 1.05; color: var(--paper); margin-bottom: 6px; }
+.closing { font-family: "CtdHand", "Lato", sans-serif; font-size: 24px; line-height: 1.4; text-align: center; margin: 44px 0 0; }
+
+footer {
+  border-top: 1px solid rgba(251,243,220,.12); margin-top: 72px; padding: 32px 24px 48px;
+  text-align: center; color: var(--muted); font-size: 15px; line-height: 1.6;
+}
+footer p { max-width: 720px; margin: 0 auto .6em; }
+.mono { font-family: "CtdMono", monospace; color: var(--green); }
+
+@media (max-width: 600px) {
+  body { font-size: 17.5px; }
+  .hero { min-height: min(70vh, 620px); background-position: 70% center; }
+  .hero-inner { padding: 72px 16px 40px; }
+  main { padding: 16px 16px 32px; }
+  .intro { padding: 22px 20px; font-size: 18px; }
+  .callout { padding: 16px; font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="tape">Dev log · the making-of</span>
+    <h1><span class="cut">Cut</span> the Director</h1>
+    <p class="lede">A game about sharing the director's chair with an AI, built in two days by one human directing a crew of AI agents.</p>
+    <div class="byline">&gt; crew.run(tasks=133, humans=1)<br><span>Directed by MARC &amp; CLAUDE_</span></div>
+  </div>
+</header>
+
+<main>
+
+<div class="intro">
+  <p><em>Cut the Director</em> is a game about sharing the director's chair with an AI. Every click cuts something from the film, and in the end you cut either the AI or yourself.</p>
+  <p>It was made the same way. I'm Marc, the one human on the team. I wrote a one-page idea and made the calls. A crew of AI agents (Claude Code) wrote the design document, the plan, every line of code, the tests and this log. I decided what the game is, how it looks, what it's called and when to stop. This is the story of two days spent directing them, for the 2026 Epic AI MegaJam, theme <strong>DIRECTOR'S CUT</strong>.</p>
+</div>
+
+<figure>
+  <a href="img/01_pipeline.png"><img src="img/01_pipeline.png" width="1600" height="900" alt="Ten steps from a one-page idea to a game you can download"></a>
+  <figcaption>Two days, ten steps: the paper cards are where I acted, the green screens are where the crew worked on its own.</figcaption>
+</figure>
+
+<section>
+<h2><span class="tape">Six critics tear the idea apart</span></h2>
+<p>My draft was called <em>Final Cut</em>: four acts, an AI co-director, six voiced endings. Before anyone wrote code, six reviewer agents read it on their own, each from one angle: game systems, the player's first minutes, the story, how hard it is to build, loopholes, and how a jam judge would see it.</p>
+<p>They came back with thirty findings and one blunt verdict: this can't be finished in time, so cut it down to one small game that is complete. I answered in half an hour. Two acts, not the one they asked for, a new title, and one rule above all: every click is a cut. A designer agent turned that into the design document the crew would build from.</p>
+<figure>
+  <a href="img/02_gdd.png"><img src="img/02_gdd.png" width="1600" height="1400" alt="The design, five passes in six hours" loading="lazy"></a>
+  <figcaption>The design document, five passes in six hours.</figcaption>
+</figure>
+</section>
+
+<section>
+<h2><span class="tape">Hiring the crew</span></h2>
+<p>An architect agent then designed the game and the team to build it. The key idea: the whole game's rules live in one piece of code that needs no graphics, so tests and bots can play a full run in milliseconds. The 3D set, the menus and the sound only show what the rules decide.</p>
+<p>It wrote nine specialist agents: one each for rules, the set, the look, the interface, QA and so on. Each owns its own part of the code. A producer agent cut the work into 86 small tasks of 10 to 40 minutes. I'm on the crew list too, with one job per milestone: play it.</p>
+<figure>
+  <a href="img/03_crew.png"><img src="img/03_crew.png" width="1600" height="1210" alt="Who did what: the crew as an org chart" loading="lazy"></a>
+  <figcaption>One human, one supervising AI and its crew of specialists.</figcaption>
+</figure>
+</section>
+
+<section>
+<h2><span class="tape">Running through the night</span></h2>
+<p>A small runner script hands out the work. It gives the next task to one agent, with nobody to ask questions. Then it checks the result itself: build the game, run every test, have a bot play the whole thing. If the check fails, the agent tries again with the error in hand, up to three times. If it still fails, the work is set aside and the game stays the way it was when it last worked.</p>
+<p>The first complete, playable version was packaged at 00:50 on Sunday. At 02:17 we hit the account's usage limit, and the crew stood still until 08:10. In the morning the work was split into three parallel workstreams to catch up.</p>
+<figure>
+  <a href="img/04_timeline.png"><img src="img/04_timeline.png" width="1600" height="1080" alt="Two days, one crew, three workstreams: every task on a timeline" loading="lazy"></a>
+  <figcaption>Every task as a bar. The red gap is the night the usage limit stopped the crew.</figcaption>
+</figure>
+<p>Nobody watched the screen. Every feature a player sees comes with a test that sets up that moment and takes a screenshot. The QA agent and the look agent study those pictures and report what is wrong, just as a tester would.</p>
+<figure>
+  <a href="img/05_before_after.png"><img src="img/05_before_after.png" width="1600" height="1080" alt="Before and after: the same camera on Saturday night and Sunday afternoon" loading="lazy"></a>
+  <figcaption>The same camera at Saturday 23:17, Sunday 15:48 and Sunday 16:15, and the title screen before and after the real art arrived.</figcaption>
+</figure>
+</section>
+
+<section>
+<h2><span class="tape">Art and sound, by mail order</span></h2>
+<p>The game's crew never made a picture or a sound itself. It sent orders by mail to my asset studio, a separate workspace with the image, 3D, voice and music tools. Each order said what was needed, where the game uses it, the size, the colours and the file name.</p>
+<p>I approved or rejected every result. I picked the fonts. I turned down all three stock voices and designed the voices of SLOP-MO (the AI co-director) and Edie (the script supervisor) myself. Meanwhile the game was always playable with grey boxes and silence. Each file was swapped in when it arrived, so nothing ever waited for art.</p>
+<figure>
+  <a href="img/06_studio.png"><img src="img/06_studio.png" width="1600" height="1040" alt="What the studio delivered: pictures, a 3D model, voices, music and fonts" loading="lazy"></a>
+  <figcaption>34 files from 9 orders, every one approved by hand.</figcaption>
+</figure>
+</section>
+
+<section>
+<h2><span class="tape">Where a human was needed</span></h2>
+<p>Eighteen moments in two days, each with a time in the log. I decided what the game is and how it looks, approved every piece of art and sound, and stepped in when the machine stopped. I didn't write code, fix a bug or answer an agent's question.</p>
+<p>In fact, agents weren't allowed to ask. When the design left something open, an agent picked the option that fit best, wrote one line explaining why and carried on. By the end there were 430 of those lines, and only 15 of them are mine.</p>
+<figure>
+  <a href="img/07_human_loop.png"><img src="img/07_human_loop.png" width="1600" height="1040" alt="Where a human was needed: eighteen moments" loading="lazy"></a>
+  <figcaption>My eighteen moments, next to everything that ran without me.</figcaption>
+</figure>
+</section>
+
+<section>
+<h2><span class="tape">Deciding what makes the cut</span></h2>
+<p>The theme is DIRECTOR'S CUT, and the plan took it literally. The design document has its own cutting-room floor: a list of everything the first draft had that this game doesn't. It also has a written order for what to drop first if time ran short.</p>
+<p>One fallback was mine alone to call: shipping one act instead of two. I didn't call it. At the freeze, one visual extra was cut and both acts stayed in.</p>
+<figure>
+  <a href="img/08_cut_list.png"><img src="img/08_cut_list.png" width="1600" height="800" alt="What didn't make the cut, and the order things would have been dropped" loading="lazy"></a>
+  <figcaption>The cutting-room floor, the drop order and the re-plan after the night.</figcaption>
+</figure>
+</section>
+
+<section>
+<h2><span class="tape">The last hours</span></h2>
+<p>The feature freeze came at 22:00 on Sunday. Seven minutes later the QA agent finished its final pass. It looked at all 151 screenshots of the finished game and said yes: a stranger can play from the title, through both acts, to an ending and into a new run.</p>
+<p>It also listed what was left. In the packaged game SLOP-MO's robot came out grey and white, and a pile of mess hid behind a district's flag. Both were fixed within the hour. Thirteen small cosmetic issues were noted and left alone.</p>
+<div class="callout"><b>&gt; one bug got past all the tests</b><br>A real mouse couldn't click the cards, because the tests pressed the buttons from inside the game rather than through the window. It was fixed at 23:09, and a new test now clicks through the window the way a player does.</div>
+</section>
+
+<section>
+<h2><span class="tape">By the numbers</span></h2>
+<figure>
+  <a href="img/09_numbers.png"><img src="img/09_numbers.png" width="1600" height="1000" alt="The numbers of the two days" loading="lazy"></a>
+</figure>
+<ul class="numbers">
+  <li><span class="n">36.5 h</span>from the first task (Saturday 09:39) to the final check (Sunday 22:07); six of them lost overnight to the usage limit</li>
+  <li><span class="n">116 / 133</span>tasks done; ten became unnecessary because a later task covered them, one was cut at the freeze</li>
+  <li><span class="n">21 min</span>for a typical task, including the automatic check</li>
+  <li><span class="n">198</span>automated tests, run after every task; 64 of them take screenshots or play the game</li>
+  <li><span class="n">~72,000</span>lines of C++ in Unreal Engine 5.8, all written by agents; nothing built by hand in the editor</li>
+  <li><span class="n">15</span>bugs filed, mostly by the QA agent from its own screenshots</li>
+  <li><span class="n">430</span>written decisions, 15 of them mine</li>
+  <li><span class="n">34</span>art and sound files from 9 orders</li>
+  <li><span class="n">$693</span>of AI usage recorded for 81 of the tasks</li>
+</ul>
+<p class="closing">My own time at the keyboard: under three hours.<br>The rest of the two days, the crew built while I slept, worked or listened to voice takes.</p>
+</section>
+
+</main>
+
+<footer>
+  <p><strong>Cut the Director</strong> by Marc, Seven Imps (a team of one), for the 2026 Epic AI MegaJam.</p>
+  <p>This log was drafted by the crew's release agent from the project's own records, then rewritten for readers. Every number on this page comes from those records.</p>
+  <p>Fonts: Fjalla One, Patrick Hand and Share Tech Mono, under the <a href="fonts/OFL_title_font_FjallaOne.txt">SIL Open Font License</a>; body text in Lato.</p>
+  <p class="mono">&gt; cut_</p>
+</footer>
+
+</body>
+</html>
