@@ -96,6 +96,13 @@ figcaption { font-family: "CtdHand", "Lato", sans-serif; color: var(--muted); fo
 .numbers .n { display: block; font-family: "CtdTitle", "Oswald", sans-serif; font-size: 44px; line-height: 1.05; color: var(--paper); margin-bottom: 6px; }
 .closing { font-family: "CtdHand", "Lato", sans-serif; font-size: 24px; line-height: 1.4; text-align: center; margin: 44px 0 0; }
 
+.play {
+  display: inline-block; margin-top: 28px; background: var(--red); color: #fff; text-decoration: none;
+  font-family: "CtdTitle", "Oswald", sans-serif; text-transform: uppercase; font-size: 24px; letter-spacing: .03em;
+  padding: 10px 26px; box-shadow: 0 4px 0 rgba(0,0,0,.45); transform: rotate(-1deg);
+}
+.play:hover { color: #fff; background: #ff4a4d; }
+.end { text-align: center; margin: 40px 0 0; }
 footer {
   border-top: 1px solid rgba(251,243,220,.12); margin-top: 72px; padding: 32px 24px 48px;
   text-align: center; color: var(--muted); font-size: 15px; line-height: 1.6;
@@ -121,6 +128,7 @@ footer p { max-width: 720px; margin: 0 auto .6em; }
     <h1><span class="cut">Cut</span> the Director</h1>
     <p class="lede">A game about sharing the director's chair with an AI, built in two days by one human directing a crew of AI agents.</p>
     <div class="byline">&gt; crew.run(tasks=133, humans=1)<br><span>Directed by MARC &amp; CLAUDE_</span></div>
+    <a class="play" href="https://gallmerci.itch.io/cut-the-director">Play the game on itch.io</a>
   </div>
 </header>
 
@@ -225,12 +233,13 @@ footer p { max-width: 720px; margin: 0 auto .6em; }
   <li><span class="n">$693</span>of AI usage recorded for 81 of the tasks</li>
 </ul>
 <p class="closing">My own time at the keyboard: under three hours.<br>The rest of the two days, the crew built while I slept, worked or listened to voice takes.</p>
+<p class="end"><a class="play" href="https://gallmerci.itch.io/cut-the-director">Play Cut the Director on itch.io</a></p>
 </section>
 
 </main>
 
 <footer>
-  <p><strong>Cut the Director</strong> by Marc, Seven Imps (a team of one), for the 2026 Epic AI MegaJam.</p>
+  <p><strong><a href="https://gallmerci.itch.io/cut-the-director">Cut the Director</a></strong> by Marc, Seven Imps (a team of one), for the 2026 Epic AI MegaJam.</p>
   <p>This log was drafted by the crew's release agent from the project's own records, then rewritten for readers. Every number on this page comes from those records.</p>
   <p>Fonts: Fjalla One, Patrick Hand and Share Tech Mono, under the <a href="fonts/OFL_title_font_FjallaOne.txt">SIL Open Font License</a>; body text in Lato.</p>
   <p class="mono">&gt; cut_</p>
